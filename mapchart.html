@@ -1,0 +1,25 @@
+<html>
+
+<head>
+    <script src="echarts.js"></script>
+    <script src="jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <div id="main">
+
+    </div>
+    <script>
+        $.get('map/zhengzhou.json', function (chinaJson) {
+            echarts.registerMap('zhengzhou', chinaJson);
+            var chart = echarts.init(document.getElementById('main'));
+            chart.setOption({
+                series: [{
+                    type: 'map',
+                    map: 'zhengzhou'
+                }]
+            });
+        });
+    </script>
+</body>
+<html>
