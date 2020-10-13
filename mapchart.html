@@ -1,25 +1,148 @@
 <html>
 
 <head>
-    <script src="echarts.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script src="jquery-3.5.1.min.js"></script>
+    <script src="echarts.js"></script>
+    <script src="echarts-gl.min.js"></script>
+  
 </head>
 
 <body>
-    <div id="main">
+    <div id="main" style="height: 100%;width: 100%;">
 
     </div>
     <script>
-        $.get('map/zhengzhou.json', function (chinaJson) {
-            echarts.registerMap('zhengzhou', chinaJson);
+        function zhengzhou(data){
+            echarts.registerMap('zhengzhou', data);
             var chart = echarts.init(document.getElementById('main'));
             chart.setOption({
-                series: [{
-                    type: 'map',
-                    map: 'zhengzhou'
-                }]
+                backgroundColor: 'rgba(0,0,0,0)',//canvas的背景颜色
+                geo3D:{
+                    boxHeight:5,
+                    regionHeight: 2,//区域的高度
+                    emphasis:{
+                        opacity: 0.5,
+                        shadowBlur: 30,
+                        label:{
+                            textStyle:{
+                                distance:5,
+                                color:"	#000000",
+                                borderWidth :0,
+                                backgroundColor:'rgba(0,0,0,0)',
+                                fontWeight:'bolder'
+                            }
+                        },
+                        itemStyle:{
+                            color:"green",
+                            opacity:10
+                        }
+                    },
+                    instancing:true,
+                    groundPlane:{
+                        show:false
+                    },
+                    // 配置为垂直渐变的背景
+                    environment: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0, color: '#00aaff' // 天空颜色
+                        }, {
+                        offset: 0.7, color: '#998866' // 地面颜色
+                        }, {
+                        offset: 1, color: '#998866' // 地面颜色
+                        }], false),
+                        //地图的具体参数
+                    map: 'zhengzhou', //地图范围
+                    shading: 'lambert', //光照带来的明暗
+                    light: { // 光照相关的设置。在 shading 为 'color' 的时候无效。
+                        main: { //场景主光源的设置
+                            intensity: 5,//主光源的强度
+                            shadow: true,//主光源是否投射阴影
+                            shadowQuality: 'high',//阴影的质量
+                            alpha: 30, //主光源绕 x 轴偏离的角度
+                            beta:190 //主光源绕 y 轴偏离的角度
+                        },
+                        ambient: { //全局的环境光设置。
+                            intensity: 0//环境光的强度
+                        }
+                    },
+                    viewControl: {//用于鼠标的旋转，缩放等视角控制
+                        distance: 50,//默认视角距离主体的距离
+                        panMouseButton: 'left',//平移操作使用的鼠标按键
+                        rotateMouseButton: 'right',//旋转操作使用的鼠标按键
+                        alpha:50 // 让canvas在x轴有一定的倾斜角度
+                    },
+                    postEffect: {//为画面添加高光，景深，环境光遮蔽（SSAO），调色等效果
+                        enable: true, //是否开启
+                        SSAO: {//环境光遮蔽
+                            radius: 1,//环境光遮蔽的采样半径。半径越大效果越自然
+                            intensity: 1,//环境光遮蔽的强度
+                            enable: true
+                        }
+                    },
+                    temporalSuperSampling: {//分帧超采样。在开启 postEffect 后，WebGL 默认的 MSAA 会无法使用,分帧超采样用来解决锯齿的问题
+                        enable: true
+                    },
+                    itemStyle: {//三维图形的视觉属性
+                        color:'#2355ac',
+                        borderWidth:1,
+                        borderColor:'#000'
+                    },
+                    shading: 'lambert',
+                    regions:[{
+                        name:'新密市',
+                        height:2.2,
+                        itemStyle:{
+                            color:"orange"
+                        }
+                    },{
+                        name:'金水区',
+                        height:2.6,
+                        emphasis:{
+                            height:3.6
+                        }
+                    },{
+                        name:'新郑市',
+                        height:3.0
+                    },{
+                        name:'登封市',
+                        height:4.0
+                    },{
+                        name:'荥阳市',
+                        height:2.3
+                    },{
+                        name:'中牟县',
+                        height:3.5
+                    },{
+                        name:'巩义市',
+                        height:2.8
+                    },{
+                        name:'惠济区',
+                        height:3.3
+                    }],
+                }
             });
-        });
+        }
+        
     </script>
+    <script src="map/zhengzhou.json?callback=zhengzhou"></script>
+    <!-- <script>
+        $(function(){
+                $.ajax({
+                    url:"map/zhengzhou.json",
+                    type:"get",
+                    dataType:"jsonp",
+                    success:function(data){
+                        echarts.registerMap('zhengzhou', data);
+                        var chart = echarts.init(document.getElementById('main'));
+                        chart.setOption({
+                        series: [{
+                            type: 'map',
+                            map: 'zhengzhou'
+                            }]
+                        });
+                    }
+                })
+        });
+    </script> -->
 </body>
 <html>
